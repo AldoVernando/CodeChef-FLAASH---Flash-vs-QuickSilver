@@ -1,0 +1,57 @@
+#include<stdio.h>
+#include<string.h>
+
+long long memo[1500000][10];
+
+long long getStep(int stair,int step,int choice,bool flag){
+	
+	if(stair < 1){
+		return 0;
+	}
+	else if(memo[stair][choice] != -1){
+		return memo[stair][choice];
+	}
+	else if(stair == 1){
+		return 1;
+	}
+	else{	
+		long long temp = 0;
+		long long totalStep = 1000000;
+		
+		for(int i=3;i>=1;i--){
+			if(i == 1 && flag) {
+				temp = getStep(stair-1,step+1,i,false);
+			}
+			else if(((stair-1)%2 == 0 || (stair-1)%3 == 0) && i == 1){
+				temp = getStep(stair-1,step+1,i,false);
+			}
+			else if(stair%i == 0 && i!=1){
+				temp = getStep(stair/i,step+1,i,true);
+			}
+			if(totalStep > temp && temp != 0)
+			totalStep = temp + 1;
+			
+			if(temp == 1) break;
+		}
+			memo[stair][choice] = totalStep;
+			return totalStep;
+	}
+}
+
+int main(){
+	
+	int input;
+  
+	scanf("%d",&input);
+	memset(memo,-1,sizeof(memo));
+	for(int i=0;i<input;i++){
+		
+		int stairs;
+		
+		scanf("%d",&stairs);	
+		
+		printf("%lld\n",getStep(stairs,0,0,true) - 1);
+	}	
+	
+	return 0;
+}
